@@ -1,0 +1,30 @@
+{
+  "name": "klinggen",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.4.2",
+    "axios": "^1.7.9",
+    "date-fns": "^4.1.0",
+    "firebase": "^11.2.0",
+    "firebase-admin": "^13.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "mailgun.js": "^11.1.0",
+    "multer": "^1.4.5-lts.1",
+    "next": "15.1.6",
+    "next-pwa": "^5.6.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "uuid": "^11.0.5",
+    "video.js": "^8.21.0",
+    "zustand": "^5.0.3"
+  }
+}
