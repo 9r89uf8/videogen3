@@ -52,7 +52,8 @@ export default function GetVideo() {
 
     // Destructure response details (if available).
     const taskData = result?.data?.data;
-    const statusMessage = result?.data?.message;
+    const statusMessage = result?.data?.data.task_status;
+    const taskStatusMessage = result?.data?.data.task_status_msg;
 
     return (
         <Container maxWidth="sm" sx={{ py: 4 }}>
@@ -107,12 +108,16 @@ export default function GetVideo() {
                     ) : (
                         <>
                             {statusMessage && (
-                                <Alert
-                                    severity={statusMessage === 'SUCCEED' ? 'success' : 'info'}
-                                    sx={{ mb: 2 }}
-                                >
-                                    {statusMessage}
-                                </Alert>
+                                <>
+                                    <Alert
+                                        severity={statusMessage === 'SUCCEED' ? 'success' : 'info'}
+                                        sx={{ mb: 2 }}
+                                    >
+                                        {statusMessage}
+                                    </Alert>
+                                    <h5>{taskStatusMessage}</h5>
+                                </>
+
                             )}
 
                             {taskData &&
