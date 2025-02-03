@@ -9,23 +9,18 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
     // Get form data from the client
-    const formData = await req.formData();
-    const prompt = formData.get('prompt');
-    const file = formData.get('image');
-    let image = null;
+    const { id, prompt } = await req.json();
 
-    // Handle file upload if a new image is provided
-    if (file) {
-        const fileExtension = file.type.split('/')[1];
-        const filePath = `images/${uuidv4()}.${fileExtension}`;
+    console.log(id);
 
-        // Convert the file to a buffer
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+    const videoDoc = adminDb.firestore().collection('videos').doc(id);
 
-        const fileUrl = await uploadToFirebaseStorage(buffer, filePath, file.mimetype);
-        image = fileUrl;
+    // Fetch the existing video data
+    const videoSnapshot = await videoDoc.get();
+    if (!videoSnapshot.exists) {
+        return NextResponse.json({ error: 'video not found' }, { status: 404 });
     }
+    const videoData = videoSnapshot.data();
 
     // Retrieve API credentials from environment variables
     const API_ACCESS_KEY = process.env.API_ACCESS_KEY;
@@ -54,7 +49,7 @@ export async function POST(req) {
         model_name: 'kling-v1-5',
         mode: 'pro',
         duration: '5', // Duration in seconds
-        image,      // The URL of the uploaded image
+        image: videoData.image,      // The URL of the uploaded image
         prompt,        // The prompt provided by the user
         cfg_scale: 0.5,
         // Include additional fields if necessary
@@ -93,7 +88,7 @@ export async function POST(req) {
             const record = {
                 task_id: data.data.task_id,  // The task ID from the external API
                 prompt: prompt,                    // The prompt sent by the user
-                image: image,
+                image: videoData.image,
                 created_at: data.data.created_at // The creation timestamp (Unix ms)
             };
 
@@ -119,4 +114,3 @@ export async function POST(req) {
         );
     }
 }
-
