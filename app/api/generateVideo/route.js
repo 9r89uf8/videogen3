@@ -12,6 +12,11 @@ export async function POST(req) {
     const formData = await req.formData();
     const prompt = formData.get('prompt');
     const file = formData.get('image');
+    const model = formData.get('model');
+    const negativePrompt = formData.get('negativePrompt');
+    const duration = formData.get('duration');
+    const creativity = formData.get('creativity');
+
     let image = null;
 
     // Handle file upload if a new image is provided
@@ -51,12 +56,13 @@ export async function POST(req) {
     // Build the payload for the external video generation API.
     // Note: The property names in your payload should match what the API expects.
     const payload = {
-        model_name: 'kling-v1-5',
+        model_name: model,
         mode: 'pro',
-        duration: '5', // Duration in seconds
+        duration: duration, // Duration in seconds
         image,      // The URL of the uploaded image
         prompt,        // The prompt provided by the user
-        cfg_scale: 0.5,
+        cfg_scale: parseInt(creativity),
+        negative_prompt: negativePrompt,
         // Include additional fields if necessary
     };
 
@@ -92,9 +98,14 @@ export async function POST(req) {
         if (data && data.message === "SUCCEED") {
             const record = {
                 task_id: data.data.task_id,  // The task ID from the external API
-                prompt: prompt,                    // The prompt sent by the user
+                prompt: prompt, // The prompt sent by the user
+                negativePrompt: negativePrompt,
+                model: model,
+                duration: duration,
+                creativity: creativity,
                 image: image,
-                created_at: data.data.created_at // The creation timestamp (Unix ms)
+                created_at: data.data.created_at, // The creation timestamp (Unix ms),
+                timestamp: adminDb.firestore.FieldValue.serverTimestamp()
             };
 
             // Save the record in the "videos" collection in Firestore

@@ -46,12 +46,14 @@ export async function POST(req) {
     // Build the payload for the external video generation API.
     // Note: The property names in your payload should match what the API expects.
     const payload = {
-        model_name: 'kling-v1-5',
+        model_name: videoData.model,
         mode: 'pro',
-        duration: '5', // Duration in seconds
+        duration: videoData.duration, // Duration in seconds
         image: videoData.image,      // The URL of the uploaded image
         prompt,        // The prompt provided by the user
-        cfg_scale: 0.5,
+        cfg_scale: parseInt(videoData.creativity),
+        negative_prompt: videoData.negativePrompt,
+        timestamp: adminDb.firestore.FieldValue.serverTimestamp()
         // Include additional fields if necessary
     };
 

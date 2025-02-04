@@ -6,7 +6,8 @@ export async function GET() {
     try {
         const girlsCollection = await adminDb
             .firestore()
-            .collection('videos')  // Add this line to sort by priority in descending order
+            .collection('videos')  // Add this line to sort by priority in descending order.
+            .orderBy('timestamp', 'desc')
             .get();
 
         const girls = [];

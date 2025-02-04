@@ -86,3 +86,28 @@ export const getVideos = async (formData) => {
     }
 };
 
+export const deleteVideo = async (formData) => {
+    const removeVideo = useStore.getState().deletePost;
+
+    try {
+        const response = await fetch('/api/deleteVideo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+        if (response.ok) {
+            const data = await response.json();
+            removeVideo(data.deletedPostId);
+            return data;
+        } else {
+            console.log('errror')
+            throw new Error('Failed to delete');
+        }
+    } catch (error) {
+        console.error(error.message);
+        return null;
+    }
+};
+

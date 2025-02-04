@@ -13,4 +13,8 @@ export const createPostsSlice = (set) => ({
             post.id === updatedPost.id ? { ...post, ...updatedPost } : post
         ),
     })),
+    // Function to delete a single post by its ID
+    deletePost: (postId) => set((state) => ({
+        posts: state.posts.filter((post) => post.id !== postId)
+    })),
 });
